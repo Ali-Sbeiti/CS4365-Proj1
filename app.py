@@ -47,11 +47,16 @@ class AppWindow:
         frame.pack()
         
         # -- Widgets
+        '''
         self.button = Button(frame, text="QUIT", command=frame.quit)
         self.button.pack(side=LEFT)
 
         self.hi = Button(frame, text="HI")
         self.hi.pack(side=RIGHT)
+        '''
+        
+        Label(frame, text="File Path").grid(row=0, sticky=N)
+        Entry(frame).grid(row=1, sticky=N)
 
 #Initialize Tk Window Object
 root = Tk()
