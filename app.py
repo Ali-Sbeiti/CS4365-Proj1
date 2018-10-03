@@ -31,29 +31,30 @@ from tkinter import *
 
 #-- Tk GUI Layout: Window (Contains)--> Frames --> Widgets
 #GUI Frame
-class AppWin(Frame):
+class AppWindow:
     def __init__(self, master):
-        #initialize Frame Object
-        Frame.__init__(self, master)
-        self.master = master
-        #assign grid to Frame
-        self.grid()
-        
-        #--Window Configuration
+
+        #-- Window Configuration
         #Window Size
         master.geometry("500x500")
-        #Window Name
+        #Window Title
         master.title("AI Project 1")
-        
 
+        #-- Initialize Frame
+        #Frame Object Gets Nested Into Window
+        frame = Frame(master)
+        #Force Frame Somewhere Into Window
+        frame.pack()
         
-        
+        #-- Widgets
+        self.button = Button(frame, text="QUIT", command=frame.quit)
+        self.button.pack(side=LEFT)
 
-#-- Win Test
-#Create Window Instance
+        self.hi = Button(frame, text="HI")
+        self.hi.pack(side=RIGHT)
+
 root = Tk()
-#Assign Application --> Tk Object
-app = AppWin(root)
-#Continue Processing Window
+
+app = AppWindow(root)
+
 root.mainloop()
-    
