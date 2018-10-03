@@ -25,12 +25,19 @@ def printBoard(puzzle):
 test = createBoard(3, [0,1,2,3,4,5,6,7,8])
 printBoard(test)
 '''
-#-- Libraries
-#Import Tkinter Lib (Python 3.0 CORE)
+# -- Libraries
+#Import Tkinter Lib (Python 3.0 CORE library)
 from tkinter import filedialog
 from tkinter import *
 
-#-- Tk GUI Layout: Window (Contains)--> Frames --> Widgets
+# -- File Managment
+#Parse File Input for Puzzle Matrix
+def parseFile(self):
+    file = open(self.fileName, 'r')
+    print(file.read())
+    
+
+# -- Tk GUI Layout: Window (Contains)--> Frames --> Widgets
 #GUI Frame
 class AppWindow:
     def __init__(self, master):
@@ -52,14 +59,15 @@ class AppWindow:
         
         # -- Default Widgets
         #Store Filename of Selected File
-        self.fileName = "NONE"
+        self.fileName = None
         #Show PATH of file selected by the user
-        self.filePath = Label(frame, text="File Path Selected: " + self.fileName).grid(row=1, sticky=W)
+        self.filePath = Label(frame, text="File Path Selected: " + ("None" if self.fileName == None else self.fileName)).grid(row=1, sticky=W)
 
         #Function Calls the file explorer on host OS
         def openFile():
             self.fileName = filedialog.askopenfilename(initialdir = "./",title = "Select Puzzle File",filetypes = (("text files","*.txt"),("all files","*.*")))
             self.filePath = Label(frame, text="File Path Selected: " + self.fileName).grid(row=1, sticky=W)
+            parseFile(self)
         #Calls openFile() functions to instance file explorer 
         self.fileSelect = Button(frame, text="Open File", command=openFile).grid(row=2, sticky=W, pady=10)
 
@@ -68,11 +76,10 @@ class AppWindow:
         #Scrollbar for Text Box (TUDO: Not working)
         #scroll = Scrollbar(matrixLog).pack(side=RIGHT, fill=Y)
 
+# -- Workbench: Spawns Application Graphics and Methods
 #Initialize Tk Window Object
 root = Tk()
-
 #Add Frame and Widgets to Window
 appWin = AppWindow(root)
-
 #Continue to Process Window
 root.mainloop()
