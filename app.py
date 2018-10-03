@@ -37,7 +37,7 @@ class AppWindow:
 
         # -- Window Configuration
         #Window Size
-        master.geometry("350x350")
+        master.geometry("500x500")
         #Window Title
         master.title("AI Project 1")
 
@@ -52,20 +52,21 @@ class AppWindow:
         
         # -- Default Widgets
         #Store Filename of Selected File
-        filename = "NONE"
+        self.fileName = "NONE"
         #Show PATH of file selected by the user
-        filePath = Label(frame, text="File Path Selected: " + filename).grid(row=1, sticky=W)
+        self.filePath = Label(frame, text="File Path Selected: " + self.fileName).grid(row=1, sticky=W)
 
         #Function Calls the file explorer on host OS
         def openFile():
-            filename = filedialog.askopenfilename(initialdir = "/",title = "Select file",filetypes = (("jpeg files","*.jpg"),("all files","*.*")))
-        #Calls openFIle() functions to instance file explorer 
-        fileSelect = Button(frame, text="Open File", command=openFile).grid(row=2, sticky=W, pady=10)
+            self.fileName = filedialog.askopenfilename(initialdir = "./",title = "Select Puzzle File",filetypes = (("text files","*.txt"),("all files","*.*")))
+            self.filePath = Label(frame, text="File Path Selected: " + self.fileName).grid(row=1, sticky=W)
+        #Calls openFile() functions to instance file explorer 
+        self.fileSelect = Button(frame, text="Open File", command=openFile).grid(row=2, sticky=W, pady=10)
 
         #Display Text Box Output Module
-        matrixLog = Text(frame).grid(row=3, sticky=N+E+W+S)
+        self.matrixLog = Text(frame, wrap=WORD).grid(row=3, sticky=N+E+W+S, padx=8, pady=8)
         #Scrollbar for Text Box (TUDO: Not working)
-        scroll = Scrollbar(matrixLog).pack(side=RIGHT, fill=Y)
+        #scroll = Scrollbar(matrixLog).pack(side=RIGHT, fill=Y)
 
 #Initialize Tk Window Object
 root = Tk()
