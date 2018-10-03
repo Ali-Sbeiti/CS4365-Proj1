@@ -30,15 +30,23 @@ printBoard(test)
 from tkinter import filedialog
 from tkinter import *
 
-# -- File Managment
-#Parse File Input for Puzzle Matrix
+# -- File Finding/Parsing
+#Parse File Input for Puzzle Matrix, Returns a list of lists to represent 2D matrix
 def parseFile(self):
     file = open(self.fileName, 'r')
-    print(file.read())
+    ##Test
+    self.matrixLog.insert(END, "File Read\nNext Matrix\n")
+
+#Function Calls the file explorer on host OS
+def openFile(self):
+    self.fileName = filedialog.askopenfilename(initialdir = "./",title = "Select Puzzle File",filetypes = (("text files","*.txt"),("all files","*.*")))
+    self.filePath = Label(self.frame, text="File Path Selected: " + self.fileName).grid(row=1, sticky=W)
+    parseFile(self)
+            
     
 
-# -- Tk GUI Layout: Window (Contains)--> Frames --> Widgets
-#GUI Frame
+# -- Tk GUI Layout: Window (Contains)--> self.frames (Contains)--> Widgets
+#GUI self.frame
 class AppWindow:
     def __init__(self, master):
 
@@ -48,38 +56,34 @@ class AppWindow:
         #Window Title
         master.title("AI Project 1")
 
-        # -- Initialize Frame Container
-        #Frame Container Gets Nested Into Window (Here called "root")
-        frame = Frame(master)
+        # -- Initialize self.frame Container
+        #self.frame Container Gets Nested Into Window (Here called "root")
+        self.frame = Frame(master)
         #Configure Grid Systems
-        frame.grid_rowconfigure(0, weight=1)
-        frame.grid_columnconfigure(0, weight=1)
-        #Force Frame Somewhere Into Window
-        frame.pack()
+        self.frame.grid_rowconfigure(0, weight=1)
+        self.frame.grid_columnconfigure(0, weight=1)
+        #Force self.frame Somewhere Into Window
+        self.frame.pack()
         
         # -- Default Widgets
         #Store Filename of Selected File
         self.fileName = None
         #Show PATH of file selected by the user
-        self.filePath = Label(frame, text="File Path Selected: " + ("None" if self.fileName == None else self.fileName)).grid(row=1, sticky=W)
+        self.filePath = Label(self.frame, text="File Path Selected: " + ("None" if self.fileName == None else self.fileName)).grid(row=1, sticky=W)
 
-        #Function Calls the file explorer on host OS
-        def openFile():
-            self.fileName = filedialog.askopenfilename(initialdir = "./",title = "Select Puzzle File",filetypes = (("text files","*.txt"),("all files","*.*")))
-            self.filePath = Label(frame, text="File Path Selected: " + self.fileName).grid(row=1, sticky=W)
-            parseFile(self)
         #Calls openFile() functions to instance file explorer 
-        self.fileSelect = Button(frame, text="Open File", command=openFile).grid(row=2, sticky=W, pady=10)
+        self.fileSelect = Button(self.frame, text="Open File", command=lambda:openFile(self)).grid(row=2, sticky=W, pady=10)
 
         #Display Text Box Output Module
-        self.matrixLog = Text(frame, wrap=WORD).grid(row=3, sticky=N+E+W+S, padx=8, pady=8)
+        self.matrixLog = Text(self.frame)
+        self.matrixLog.grid(row=3, sticky=N+E+W+S, padx=8, pady=8)
         #Scrollbar for Text Box (TUDO: Not working)
         #scroll = Scrollbar(matrixLog).pack(side=RIGHT, fill=Y)
 
 # -- Workbench: Spawns Application Graphics and Methods
 #Initialize Tk Window Object
 root = Tk()
-#Add Frame and Widgets to Window
+#Add self.frame and Widgets to Window
 appWin = AppWindow(root)
 #Continue to Process Window
 root.mainloop()
