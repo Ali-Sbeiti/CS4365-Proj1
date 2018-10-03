@@ -25,11 +25,11 @@ def printBoard(puzzle):
 test = createBoard(3, [0,1,2,3,4,5,6,7,8])
 printBoard(test)
 '''
-#--Libraries
+#-- Libraries
 #Import Tkinter Lib (Python 3.0 CORE)
 from tkinter import *
 
-#--Tk GUI Layout
+#-- Tk GUI Layout: Window (Contains)--> Frames --> Widgets
 #GUI Frame
 class AppWin(Frame):
     def __init__(self, master):
@@ -49,7 +49,7 @@ class AppWin(Frame):
         
         
 
-#--Win Test
+#-- Win Test
 #Create Window Instance
 root = Tk()
 #Assign Application --> Tk Object
