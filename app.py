@@ -38,15 +38,12 @@ class AppWin(Frame):
         self.master = master
         #assign grid to Frame
         self.grid()
-        self.populateFrame()
         
         #--Window Configuration
         #Window Size
         master.geometry("500x500")
         #Window Name
         master.title("AI Project 1")
-    
-    def populateFrame(self):
         
 
         
