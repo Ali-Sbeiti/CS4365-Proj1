@@ -27,6 +27,7 @@ printBoard(test)
 '''
 #-- Libraries
 #Import Tkinter Lib (Python 3.0 CORE)
+from tkinter import filedialog
 from tkinter import *
 
 #-- Tk GUI Layout: Window (Contains)--> Frames --> Widgets
@@ -36,27 +37,35 @@ class AppWindow:
 
         # -- Window Configuration
         #Window Size
-        master.geometry("500x500")
+        master.geometry("350x350")
         #Window Title
         master.title("AI Project 1")
 
         # -- Initialize Frame Container
         #Frame Container Gets Nested Into Window (Here called "root")
         frame = Frame(master)
+        #Configure Grid Systems
+        frame.grid_rowconfigure(0, weight=1)
+        frame.grid_columnconfigure(0, weight=1)
         #Force Frame Somewhere Into Window
         frame.pack()
         
-        # -- Widgets
-        '''
-        self.button = Button(frame, text="QUIT", command=frame.quit)
-        self.button.pack(side=LEFT)
+        # -- Default Widgets
+        #Store Filename of Selected File
+        filename = "NONE"
+        #Show PATH of file selected by the user
+        filePath = Label(frame, text="File Path Selected: " + filename).grid(row=1, sticky=W)
 
-        self.hi = Button(frame, text="HI")
-        self.hi.pack(side=RIGHT)
-        '''
-        
-        Label(frame, text="File Path").grid(row=0, sticky=N)
-        Entry(frame).grid(row=1, sticky=N)
+        #Function Calls the file explorer on host OS
+        def openFile():
+            filename = filedialog.askopenfilename(initialdir = "/",title = "Select file",filetypes = (("jpeg files","*.jpg"),("all files","*.*")))
+        #Calls openFIle() functions to instance file explorer 
+        fileSelect = Button(frame, text="Open File", command=openFile).grid(row=2, sticky=W, pady=10)
+
+        #Display Text Box Output Module
+        matrixLog = Text(frame).grid(row=3, sticky=N+E+W+S)
+        #Scrollbar for Text Box (TUDO: Not working)
+        scroll = Scrollbar(matrixLog).pack(side=RIGHT, fill=Y)
 
 #Initialize Tk Window Object
 root = Tk()
