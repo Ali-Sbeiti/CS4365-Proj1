@@ -34,27 +34,30 @@ from tkinter import *
 class AppWindow:
     def __init__(self, master):
 
-        #-- Window Configuration
+        # -- Window Configuration
         #Window Size
         master.geometry("500x500")
         #Window Title
         master.title("AI Project 1")
 
-        #-- Initialize Frame
-        #Frame Object Gets Nested Into Window
+        # -- Initialize Frame Container
+        #Frame Container Gets Nested Into Window (Here called "root")
         frame = Frame(master)
         #Force Frame Somewhere Into Window
         frame.pack()
         
-        #-- Widgets
+        # -- Widgets
         self.button = Button(frame, text="QUIT", command=frame.quit)
         self.button.pack(side=LEFT)
 
         self.hi = Button(frame, text="HI")
         self.hi.pack(side=RIGHT)
 
+#Initialize Tk Window Object
 root = Tk()
 
-app = AppWindow(root)
+#Add Frame and Widgets to Window
+appWin = AppWindow(root)
 
+#Continue to Process Window
 root.mainloop()
