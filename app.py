@@ -33,9 +33,30 @@ from tkinter import *
 # -- File Finding/Parsing
 #Parse File Input for Puzzle Matrix, Returns a list of lists to represent 2D matrix
 def parseFile(self):
-    file = open(self.fileName, 'r')
+    matrix = []
+    row = 0
+    try:
+        with open(self.fileName, 'r') as file:
+            for x in file:
+                matrix.append([])
+                nl = x.strip()
+                if nl:
+                 for y in nl:
+                     n2 = y.strip()
+                     if n2:
+                         matrix[row].append(n2)
+                if nl:
+                    row += 1
+            print(matrix)
+                         
+                        
+    except:
+        print('Failed to Open and Read File --> ' + self.fileName)
+
+      
+    
     ##Test
-    self.matrixLog.insert(END, "File Read\nNext Matrix\n")
+    #self.matrixLog.insert(END, "File Read\nNext Matrix\n")
 
 #Function Calls the file explorer on host OS
 def openFile(self):
