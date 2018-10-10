@@ -1,46 +1,20 @@
-''' Initial Testing Code
-#Creates puzzle board of desired size
-def createBoard(size,input):
-    # 2D matrix representing the puzzle board
-    puzzle = []
-    count = 0
-
-    #Populate Puzzle Board with Rows
-    for x in range (0, size):
-        #adds "Row" to the puzzle list
-        puzzle.append([])
-
-        #Populate Puzzle Board Row with Input values 
-        for y in range(0, size):
-            puzzle[x].append(input[count])
-            count = count + 1
-    
-    #return reference to puzzle matrix
-    return puzzle
-
-def printBoard(puzzle):
-    for x in puzzle:
-        print(*x, sep=" ")
-
-test = createBoard(3, [0,1,2,3,4,5,6,7,8])
-printBoard(test)
-'''
 # -- Libraries
 #Import Tkinter Lib (Python 3.0 CORE library)
 from tkinter import filedialog
 from tkinter import *
+
 # -- Output
 #Append to end of matrixlog
 def initialOut(out,matrix):
     out.matrixLog.config(state=NORMAL)
     out.matrixLog.insert(END,'####################################\nInitial State:\n\n')
     out.matrixLog.config(state=DISABLED)
-    matrixOut(out,matrix)
+    printBoard(out,matrix)
     out.matrixLog.config(state=NORMAL)
     out.matrixLog.insert(END,'####################################\n\n')
     out.matrixLog.config(state=DISABLED)
 
-def matrixOut(out,matrix):
+def printBoard(out,matrix):
     out.matrixLog.config(state=NORMAL)
     for x in matrix:
         for y in x:
@@ -62,17 +36,17 @@ def parseFile(self):
             #Parse Each Line in the File
             for x in file:
                 #Trim Whitespace on Line From File
-                nl = x.strip()
-                if nl:
+                rowLine = x.strip()
+                if rowLine:
                  #For Every Non-Empty Row From File, Append Empty List
                  matrix.append([])
                  #Parse Each Column of Row line
-                 for y in nl:
-                     n2 = y.strip()
-                     if n2:
+                 for y in rowLine:
+                     columnVal = y.strip()
+                     if columnVal:
                          #Append Each Matrix Element to the Current Row
-                         matrix[row].append(n2)
-                if nl:
+                         matrix[row].append(columnVal)
+                if rowLine:
                     #Increment Row ID Number
                     row += 1
             #New file opened successfully, clear textbox
@@ -82,9 +56,6 @@ def parseFile(self):
     except:
         #Could Not Open, Or Could not Read Input (Bad Input)
         print('Failed to Open and Read File --> ' + self.fileName)
-
-    ##Test
-    #self.matrixLog.insert(END, "File Read\nNext Matrix\n")
 
 #Function Calls the file explorer on host OS
 def openFile(self):
