@@ -3,6 +3,38 @@
 from tkinter import filedialog
 from tkinter import *
 
+# -- RBFS Function
+def RBFS(matrix):
+    findHeuristic(matrix)
+
+# -- Heuristic Functions
+def findHeuristic(matrix):
+    #Build goal state matrix based on file passed in.
+    goal = []
+    for x in range(len(matrix)):
+        goal.append([])
+        for y in range(len(matrix[x])):
+            goal[x].append(str((len(matrix)*x)+y))
+    #Debug## Board Comparisons
+    print(matrix)
+    print(goal)
+    #Use Manhattan distance Method to return Heuristic Value
+    #Initial Heuristic of Matrix
+    heuristicValue = 0
+    for i in range(len(matrix)):
+        for o in range(len(matrix[x])):
+            for k in range(len(goal)):
+                for n in range(len(goal[k])):
+                    if(matrix[i][o] == goal[k][n]):
+                        print("Matched " + matrix[i][o] + ": [" + str(i) + "],[" + str(o) + "] --> [" + str(k) + "],[" + str(n) + "] = " + str(( abs(k-i) + abs(n-o))))
+                        heuristicValue += (abs(k-i) + abs(n-o))
+    print("Total H(n): " + str(heuristicValue))
+    return heuristicValue
+
+
+
+
+
 # -- Output
 #Append to end of matrixlog
 def initialOut(out,matrix):
@@ -52,10 +84,19 @@ def parseFile(self):
             #New file opened successfully, clear textbox
             self.matrixLog.delete(1.0,END) 
             initialOut(self,matrix)
-                                
     except:
         #Could Not Open, Or Could not Read Input (Bad Input)
-        print('Failed to Open and Read File --> ' + self.fileName)
+        print('Failed to Open and Read File OR Aborted Open Operation --> ' + self.fileName)
+        return
+
+    #File Open and Read, now start search algorithm, Recursive Best-First Search (RBFS)
+    try:
+        RBFS(matrix)                              
+    except:
+        #Could not solve puzzle
+        print('Read Puzzle into Memory but could not solve --> ' + self.fileName)
+        return
+        
 
 #Function Calls the file explorer on host OS
 def openFile(self):
