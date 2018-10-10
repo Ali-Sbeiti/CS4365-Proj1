@@ -29,43 +29,72 @@ printBoard(test)
 #Import Tkinter Lib (Python 3.0 CORE library)
 from tkinter import filedialog
 from tkinter import *
+# -- Output
+#Append to end of matrixlog
+def initialOut(out,matrix):
+    out.matrixLog.config(state=NORMAL)
+    out.matrixLog.insert(END,'####################################\nInitial State:\n\n')
+    out.matrixLog.config(state=DISABLED)
+    matrixOut(out,matrix)
+    out.matrixLog.config(state=NORMAL)
+    out.matrixLog.insert(END,'####################################\n\n')
+    out.matrixLog.config(state=DISABLED)
+
+def matrixOut(out,matrix):
+    out.matrixLog.config(state=NORMAL)
+    for x in matrix:
+        for y in x:
+            out.matrixLog.insert(END, '|' + y + '|')
+        out.matrixLog.insert(END, '\n')
+    out.matrixLog.insert(END, '\n')
+    out.matrixLog.config(state=DISABLED)
 
 # -- File Finding/Parsing
 #Parse File Input for Puzzle Matrix, Returns a list of lists to represent 2D matrix
 def parseFile(self):
+    #List Will Contain Rows That Represent our Puzzle Board
     matrix = []
+    #Counter Tracks Which Row on Board We're Building
     row = 0
     try:
+        #Open File Passed in From File Dialog Window
         with open(self.fileName, 'r') as file:
+            #Parse Each Line in the File
             for x in file:
-                matrix.append([])
+                #Trim Whitespace on Line From File
                 nl = x.strip()
                 if nl:
+                 #For Every Non-Empty Row From File, Append Empty List
+                 matrix.append([])
+                 #Parse Each Column of Row line
                  for y in nl:
                      n2 = y.strip()
                      if n2:
+                         #Append Each Matrix Element to the Current Row
                          matrix[row].append(n2)
                 if nl:
+                    #Increment Row ID Number
                     row += 1
-            print(matrix)
-                         
-                        
+            #New file opened successfully, clear textbox
+            self.matrixLog.delete(1.0,END) 
+            initialOut(self,matrix)
+                                
     except:
+        #Could Not Open, Or Could not Read Input (Bad Input)
         print('Failed to Open and Read File --> ' + self.fileName)
 
-      
-    
     ##Test
     #self.matrixLog.insert(END, "File Read\nNext Matrix\n")
 
 #Function Calls the file explorer on host OS
 def openFile(self):
+    #Prompt user to load in puzzle file, in .txt format
     self.fileName = filedialog.askopenfilename(initialdir = "./",title = "Select Puzzle File",filetypes = (("text files","*.txt"),("all files","*.*")))
+    #Update selected file path
     self.filePath = Label(self.frame, text="File Path Selected: " + self.fileName).grid(row=1, sticky=W)
+    #Function reads and stores Puzzle state in memory
     parseFile(self)
             
-    
-
 # -- Tk GUI Layout: Window (Contains)--> self.frames (Contains)--> Widgets
 #GUI self.frame
 class AppWindow:
@@ -98,6 +127,7 @@ class AppWindow:
         #Display Text Box Output Module
         self.matrixLog = Text(self.frame)
         self.matrixLog.grid(row=3, sticky=N+E+W+S, padx=8, pady=8)
+        self.matrixLog.config(state=DISABLED)
         #Scrollbar for Text Box (TUDO: Not working)
         #scroll = Scrollbar(matrixLog).pack(side=RIGHT, fill=Y)
 
