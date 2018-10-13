@@ -26,26 +26,35 @@ def findHeuristic(matrix):
             for k in range(len(goal)):
                 for n in range(len(goal[k])):
                     if(matrix[i][o] == goal[k][n]):
+                        #Debug
                         print("Matched " + matrix[i][o] + ": [" + str(i) + "],[" + str(o) + "] --> [" + str(k) + "],[" + str(n) + "] = " + str(( abs(k-i) + abs(n-o))))
                         heuristicValue += (abs(k-i) + abs(n-o))
     print("Total H(n): " + str(heuristicValue))
     return heuristicValue
 
-
-
-
-
 # -- Output
 #Append to end of matrixlog
 def initialOut(out,matrix):
+    #Make GUI textarea writable 
     out.matrixLog.config(state=NORMAL)
-    out.matrixLog.insert(END,'####################################\nInitial State:\n\n')
-    out.matrixLog.config(state=DISABLED)
-    printBoard(out,matrix)
-    out.matrixLog.config(state=NORMAL)
-    out.matrixLog.insert(END,'####################################\n\n')
+    #Add borders for readability
+    for i in range(20):
+        out.matrixLog.insert(END,'#')
+    #Label Initial State
+    out.matrixLog.insert(END, '\nInitial State: \n\n')
     out.matrixLog.config(state=DISABLED)
 
+    #Print Current Board State (Initial)
+    printBoard(out,matrix)
+
+    out.matrixLog.config(state=NORMAL)
+    #add borders for readability
+    for i in range(20):
+        out.matrixLog.insert(END, '#')
+    out.matrixLog.insert(END, '\n\n')
+    out.matrixLog.config(state=DISABLED)
+
+#Print current state of the puzzle matrix
 def printBoard(out,matrix):
     out.matrixLog.config(state=NORMAL)
     for x in matrix:
