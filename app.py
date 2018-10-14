@@ -2,10 +2,12 @@
 #Import Tkinter Lib (Python 3.0 CORE library)
 from tkinter import filedialog
 from tkinter import *
+import copy
 
 # -- RBFS Function
 def RBFS(matrix):
-    findHeuristic(matrix)
+    #findHeuristic(matrix)
+    findChildren(matrix)
 
 # -- Heuristic Functions
 def findHeuristic(matrix):
@@ -16,8 +18,8 @@ def findHeuristic(matrix):
         for y in range(len(matrix[x])):
             goal[x].append(str((len(matrix)*x)+y))
     #Debug## Board Comparisons
-    print(matrix)
-    print(goal)
+    #print(matrix)
+    #print(goal)
     #Use Manhattan distance Method to return Heuristic Value
     #Initial Heuristic of Matrix
     heuristicValue = 0
@@ -27,10 +29,48 @@ def findHeuristic(matrix):
                 for n in range(len(goal[k])):
                     if(matrix[i][o] == goal[k][n]):
                         #Debug
-                        print("Matched " + matrix[i][o] + ": [" + str(i) + "],[" + str(o) + "] --> [" + str(k) + "],[" + str(n) + "] = " + str(( abs(k-i) + abs(n-o))))
+                        #print("Matched " + matrix[i][o] + ": [" + str(i) + "],[" + str(o) + "] --> [" + str(k) + "],[" + str(n) + "] = " + str(( abs(k-i) + abs(n-o))))
                         heuristicValue += (abs(k-i) + abs(n-o))
     print("Total H(n): " + str(heuristicValue))
     return heuristicValue
+
+#Returns a list of possible board states after one move
+def findChildren(matrix):
+    #find empty tile on matrix
+    empty = []
+    for x in range(len(matrix)):
+        for y in range(len(matrix[x])):
+            if(matrix[x][y] == '0'):
+                empty.append(x)
+                empty.append(y)
+    states = []
+    #check if a north swap is possible
+    print("Checking: " + str(empty[0]) + "," + str(empty[1]))
+    if((empty[0] - 1) >= 0):
+        print("Swap North\n")
+        states.append(tileSwap(matrix, empty, [(empty[0] - 1), empty[1]]))
+    #check if a south swap is possible
+    if((empty[0] + 1) < len(matrix)):
+        print("Swap South\n")
+        states.append(tileSwap(matrix, empty, [(empty[0] + 1), empty[1]]))
+    #check if east swap is possible
+    if((empty[1] + 1) < len(matrix[empty[0]])):
+        print("Swap East\n")
+        states.append(tileSwap(matrix, empty, [empty[0], (empty[1] + 1)]))
+    #check if west swap is possible
+    if((empty[1] - 1) >= 0):
+        print("Swap West\n")
+        states.append(tileSwap(matrix, empty, [empty[0], (empty[1] - 1)]))
+
+    for state in states:
+        printBoard(appWin, state)
+    printBoard(appWin, matrix)
+#Swaps the empty tile of a matrix with some other tile in a direction
+def tileSwap(matrix,empty,tile):
+    newPuzzle = copy.deepcopy(matrix)
+    newPuzzle[empty[0]][empty[1]], newPuzzle[tile[0]][tile[1]] = newPuzzle[tile[0]][tile[1]], newPuzzle[empty[0]][empty[1]]
+    return newPuzzle
+
 
 # -- Output
 #Append to end of matrixlog
@@ -99,12 +139,13 @@ def parseFile(self):
         return
 
     #File Open and Read, now start search algorithm, Recursive Best-First Search (RBFS)
-    try:
+    RBFS(matrix)
+    '''try:
         RBFS(matrix)                              
     except:
         #Could not solve puzzle
         print('Read Puzzle into Memory but could not solve --> ' + self.fileName)
-        return
+        return'''
         
 
 #Function Calls the file explorer on host OS
