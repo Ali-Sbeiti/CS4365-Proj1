@@ -4,18 +4,33 @@ from tkinter import filedialog
 from tkinter import *
 #Import Copy Lib (3.3 CORE)
 import copy
+#INFINITY "Constant"
+INFINITY = 1000000
 
 # -- RBFS Function
-def RBFS(matrix, max):
-    this = Puzzle()
-    this.nodeHeuristic = findHeuristic(matrix)
-    this.maxHeuristic = (max)
+def RBFS(this):
+    #Fill Object and a List of children
+    this.addSubtree(findChildren(this.state))
 
-    this.addSubtree(findChildren(matrix))
+    #Check Pre-conditions
+    #Goal State Found
+    if(this.nodeHeuristic == 0):
+        return this.nodeHeuristic
+    #No Children Possible (Impossible?)
+    if not this.children:
+        return INFINITY
+    
+    #For every child matrix, place in a puzzle node object
+    localChildren = []
+    for child in this.children:
+        localChildren.append(Puzzle(child))
 
-    ##Debug
-    for pcs in this.children:
-        printBoard(appWin,pcs)
+    #Initial Sort List of Puzzle Node objects organized by heuristic values (Low -> High)
+    localChildren.sort(key=lambda node: node.nodeHeuristic)
+    
+    #Increment through subtree until a valid path to the solution has been found
+    while not ()
+    
 
 # -- Heuristic Functions
 def findHeuristic(matrix):
@@ -152,7 +167,7 @@ def parseFile(self):
         return
 
     #File Open and Read, now start search algorithm, Recursive Best-First Search (RBFS)
-    RBFS(matrix, 1000000)   
+    RBFS(Puzzle(matrix))
     '''try:
         RBFS(matrix)                              
     except:
@@ -173,11 +188,11 @@ def openFile(self):
 # -- Tree/Node Object Structure
 #Node object structure
 class Puzzle:
-    def __init__(self):
-        #Object Variables
+    def __init__(self,matrix,max=INFINITY):
         self.children = []
-        self.nodeHeuristic = 100000
-        self.maxHeuristic = 100000
+        self.state = matrix
+        self.nodeHeuristic = findHeuristic(matrix)
+        self.maxHeuristic = max
 
     #Object Functions
     #Add child subtree to this node
