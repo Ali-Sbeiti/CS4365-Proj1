@@ -1,13 +1,21 @@
 # -- Libraries
-#Import Tkinter Lib (Python 3.0 CORE library)
+#Import Tkinter Lib (Python 3.3 CORE library)
 from tkinter import filedialog
 from tkinter import *
+#Import Copy Lib (3.3 CORE)
 import copy
 
 # -- RBFS Function
-def RBFS(matrix):
-    #findHeuristic(matrix)
-    findChildren(matrix)
+def RBFS(matrix, max):
+    this = Puzzle()
+    this.nodeHeuristic = findHeuristic(matrix)
+    this.maxHeuristic = (max)
+
+    this.addSubtree(findChildren(matrix))
+
+    ##Debug
+    for pcs in this.children:
+        printBoard(appWin,pcs)
 
 # -- Heuristic Functions
 def findHeuristic(matrix):
@@ -62,12 +70,17 @@ def findChildren(matrix):
         print("Swap West\n")
         states.append(tileSwap(matrix, empty, [empty[0], (empty[1] - 1)]))
 
-    for state in states:
+    return states
+
+    #Debug
+    '''for state in states:
         printBoard(appWin, state)
-    printBoard(appWin, matrix)
+    printBoard(appWin, matrix)'''
 #Swaps the empty tile of a matrix with some other tile in a direction
 def tileSwap(matrix,empty,tile):
+    #Create a copy of the matrix object
     newPuzzle = copy.deepcopy(matrix)
+    #Swap tiles of the 2 coordinates passed in (Empty and Tile)
     newPuzzle[empty[0]][empty[1]], newPuzzle[tile[0]][tile[1]] = newPuzzle[tile[0]][tile[1]], newPuzzle[empty[0]][empty[1]]
     return newPuzzle
 
@@ -139,7 +152,7 @@ def parseFile(self):
         return
 
     #File Open and Read, now start search algorithm, Recursive Best-First Search (RBFS)
-    RBFS(matrix)
+    RBFS(matrix, 1000000)   
     '''try:
         RBFS(matrix)                              
     except:
@@ -156,7 +169,21 @@ def openFile(self):
     self.filePath = Label(self.frame, text="File Path Selected: " + self.fileName).grid(row=1, sticky=W)
     #Function reads and stores Puzzle state in memory
     parseFile(self)
-            
+
+# -- Tree/Node Object Structure
+#Node object structure
+class Puzzle:
+    def __init__(self):
+        #Object Variables
+        self.children = []
+        self.nodeHeuristic = 100000
+        self.maxHeuristic = 100000
+
+    #Object Functions
+    #Add child subtree to this node
+    def addSubtree(self, tree):
+        self.children = copy.deepcopy(tree)
+
 # -- Tk GUI Layout: Window (Contains)--> self.frames (Contains)--> Widgets
 #GUI self.frame
 class AppWindow:
