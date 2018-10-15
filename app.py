@@ -10,6 +10,8 @@ from time import sleep
 
 # -- RBFS Function
 def RBFS(this):
+    #Add current state to solution
+    this.solution.append(this.state)
     #Fill Object and a List of children
     this.addSubtree(findChildren(this.state))
 
@@ -27,50 +29,43 @@ def RBFS(this):
     nodeChildren = []
     for child in this.children:
         nodeChildren.append(Puzzle(child))
-
-    #Initial Sort List of Puzzle Node objects organized by heuristic values (Low -> High)
-    nodeChildren.sort(key=lambda node: node.nodeHeuristic)
     
     #Increment through subtree until a valid path to the solution has been found
     while True:
-        nextStage = True
-        #DEBUG
-        sleep(2)
-        #Node with lowest heuristic is always the candidate
-        candidate = nodeChildren[0]
-        #Set candidates grandfather to current node state
-        candidate.previous = this.state
-
-        #Check if cheapest node is within bound set by parent
-        if(this.maxHeuristic < candidate.nodeHeuristic):
-            #If not within bound, set heuristic of parent with cheapest node in subtree
-            this.nodeHeuristic = candidate.nodeHeuristic
-            print("Reverted Recursion")
-            return this.nodeHeuristic
-        #Set maximum bound to the heuristic of the next cheapest node (including parent)
-        if(this.maxHeuristic > nodeChildren[1].nodeHeuristic):
-            candidate.maxHeuristic = nodeChildren[1].nodeHeuristic
-        else:
-            candidate.maxHeuristic = this.maxHeuristic
-
-        #Check to see if search fucntion is about to loop
-        if(this.previous):
-            if(this.previous == candidate.state):
-                print("NO LOOP")
-                nextStage = False
-                candidate.nodeHeuristic = INFINITY
-
-        #Explore next cheapest subtree
-        nextHeu = INFINITY
-        if(nextStage):
-            nextHeu = RBFS(candidate)
-        #IF candidate was the goal state
-            if(nextHeu == 0):
-                #recursively add states to the list of solution states
-                this.solution.append(this.state)
-                return nextHeu
-        #Resort child list in case of heuristic changes change
+        #Initial Sort List of Puzzle Node objects organized by heuristic values (Low -> High)
         nodeChildren.sort(key=lambda node: node.nodeHeuristic)
+
+        #Get child state with the lowest heuristic function
+        candidate = nodeChildren[0]
+
+        #Check if cheapest subtree respects the bound of the parent node
+        #if not, update parent heuristic value and revert recursion
+        if(this.maxHeuristic < candidate.nodeHeuristic):
+            this.nodeHeuristic = candidate.nodeHeuristic
+            this.solution.remove(this.state)
+            return this.nodeHeuristic
+        else:
+            if(this.maxHeuristic > nodeChildren[1].nodeHeuristic):
+                candidate.maxHeuristic = nodeChildren[1].nodeHeuristic
+            else:
+                candidate.maxHeuristic = this.maxHeuristic
+        
+        #Check to see if candidate state has already been visited
+        visitCand = True
+        rtnSet = INFINITY
+        for prev in this.solution:
+            if(candidate.state == prev):
+                print("NO LOOP")
+                visitCand = False
+                candidate.nodeHeuristic = INFINITY              
+        
+        #If candidate state has never been visited, explore the subtree
+        #If subtree contains the goal state, roll back the tree
+        if(visitCand):
+            rtnSet = RBFS(candidate) 
+            if(rtnSet == 0):
+                return 0    
+        
 
 # -- Heuristic Functions
 def findHeuristic(matrix):
@@ -207,7 +202,6 @@ def parseFile(self):
     #File Open and Read, now start search algorithm, Recursive Best-First Search (RBFS)
     test = Puzzle(matrix)
     RBFS(test)
-    test.solution.reverse()
     for t in test.solution:
         printBoard(appWin, t)   
     '''try:
