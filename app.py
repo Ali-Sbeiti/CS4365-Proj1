@@ -6,6 +6,7 @@ from tkinter import *
 import copy
 #INFINITY "Constant"
 INFINITY = 1000000
+from time import sleep
 
 # -- RBFS Function
 def RBFS(this):
@@ -13,24 +14,49 @@ def RBFS(this):
     this.addSubtree(findChildren(this.state))
 
     #Check Pre-conditions
-    #Goal State Found
+    #Check if current node is a goal state
     if(this.nodeHeuristic == 0):
-        return this.nodeHeuristic
+        #Add goal state to the list of solution states
+        this.solution.append(this.state)
+        return 0
     #No Children Possible (Impossible?)
     if not this.children:
         return INFINITY
     
     #For every child matrix, place in a puzzle node object
-    localChildren = []
+    nodeChildren = []
     for child in this.children:
-        localChildren.append(Puzzle(child))
+        nodeChildren.append(Puzzle(child))
 
     #Initial Sort List of Puzzle Node objects organized by heuristic values (Low -> High)
-    localChildren.sort(key=lambda node: node.nodeHeuristic)
+    nodeChildren.sort(key=lambda node: node.nodeHeuristic)
     
     #Increment through subtree until a valid path to the solution has been found
-    while not ()
-    
+    while True:
+        #DEBUG
+        #sleep(2)
+        #Node with lowest heuristic is always the candidate
+        candidate = nodeChildren[0]
+        #Check if cheapest node is within bound set by parent
+        if(this.maxHeuristic < candidate.nodeHeuristic):
+            #If not within bound, set heuristic of parent with cheapest node in subtree
+            this.nodeHeuristic = candidate.nodeHeuristic
+            print("Reverted Recursion")
+            return this.nodeHeuristic
+        #Set maximum bound to the heuristic of the next cheapest node (including parent)
+        if(this.maxHeuristic > nodeChildren[1].nodeHeuristic):
+            candidate.maxHeuristic = nodeChildren[1].nodeHeuristic
+        else:
+            candidate.maxHeuristic = this.maxHeuristic
+        #Explore next cheapest subtree
+        nextHeu = RBFS(candidate)
+        #IF candidate was the goal state
+        if(nextHeu == 0):
+            #recursively add states to the list of solution states
+            this.solution.append(this.state)
+            return nextHeu
+        #Resort child list in case of heuristic changes change
+        nodeChildren.sort(key=lambda node: node.nodeHeuristic)
 
 # -- Heuristic Functions
 def findHeuristic(matrix):
@@ -51,9 +77,11 @@ def findHeuristic(matrix):
             for k in range(len(goal)):
                 for n in range(len(goal[k])):
                     if(matrix[i][o] == goal[k][n]):
-                        #Debug
-                        #print("Matched " + matrix[i][o] + ": [" + str(i) + "],[" + str(o) + "] --> [" + str(k) + "],[" + str(n) + "] = " + str(( abs(k-i) + abs(n-o))))
-                        heuristicValue += (abs(k-i) + abs(n-o))
+                        if((k == 0) and (n == 0)):
+                            pass
+                        else:
+                            heuristicValue += (abs(k-i) + abs(n-o))
+                            print("FOUND: " + "[" + str(i) + str(o) + " |AT| " + str(k) + str(n)+ "]:" + str(abs(k-i)) +" + " + str(abs(n-o)))
     print("Total H(n): " + str(heuristicValue))
     return heuristicValue
 
@@ -68,21 +96,20 @@ def findChildren(matrix):
                 empty.append(y)
     states = []
     #check if a north swap is possible
-    print("Checking: " + str(empty[0]) + "," + str(empty[1]))
     if((empty[0] - 1) >= 0):
-        print("Swap North\n")
+        print("Swap North")
         states.append(tileSwap(matrix, empty, [(empty[0] - 1), empty[1]]))
     #check if a south swap is possible
     if((empty[0] + 1) < len(matrix)):
-        print("Swap South\n")
+        print("Swap South")
         states.append(tileSwap(matrix, empty, [(empty[0] + 1), empty[1]]))
     #check if east swap is possible
     if((empty[1] + 1) < len(matrix[empty[0]])):
-        print("Swap East\n")
+        print("Swap East")
         states.append(tileSwap(matrix, empty, [empty[0], (empty[1] + 1)]))
     #check if west swap is possible
     if((empty[1] - 1) >= 0):
-        print("Swap West\n")
+        print("Swap West")
         states.append(tileSwap(matrix, empty, [empty[0], (empty[1] - 1)]))
 
     return states
@@ -167,13 +194,17 @@ def parseFile(self):
         return
 
     #File Open and Read, now start search algorithm, Recursive Best-First Search (RBFS)
-    RBFS(Puzzle(matrix))
-    '''try:
-        RBFS(matrix)                              
+        
+    try:
+        test = Puzzle(matrix)
+        RBFS(test)
+        test.solution.reverse()
+        for t in test.solution:
+            printBoard(appWin, t)                             
     except:
         #Could not solve puzzle
         print('Read Puzzle into Memory but could not solve --> ' + self.fileName)
-        return'''
+        return
         
 
 #Function Calls the file explorer on host OS
@@ -188,6 +219,7 @@ def openFile(self):
 # -- Tree/Node Object Structure
 #Node object structure
 class Puzzle:
+    solution = []
     def __init__(self,matrix,max=INFINITY):
         self.children = []
         self.state = matrix
