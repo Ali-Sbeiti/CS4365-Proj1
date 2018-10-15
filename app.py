@@ -19,7 +19,7 @@ def RBFS(this):
         #Add goal state to the list of solution states
         this.solution.append(this.state)
         return 0
-    #No Children Possible (Impossible?)
+    #No Children (Moves) Possible (Impossible?)
     if not this.children:
         return INFINITY
     
@@ -34,9 +34,18 @@ def RBFS(this):
     #Increment through subtree until a valid path to the solution has been found
     while True:
         #DEBUG
-        #sleep(2)
+        sleep(2)
         #Node with lowest heuristic is always the candidate
         candidate = nodeChildren[0]
+        #Set candidates grandfather to current node state
+        candidate.previous = this.state
+        #CHeck to see if search fucntion is about to loop
+        if(this.previous):
+            if(this.previous == candidate.state):
+                print("NO LOOP")
+                candidate.nodeHeuristic = INFINITY
+                return this.nodeHeuristic
+
         #Check if cheapest node is within bound set by parent
         if(this.maxHeuristic < candidate.nodeHeuristic):
             #If not within bound, set heuristic of parent with cheapest node in subtree
@@ -66,9 +75,6 @@ def findHeuristic(matrix):
         goal.append([])
         for y in range(len(matrix[x])):
             goal[x].append(str((len(matrix)*x)+y))
-    #Debug## Board Comparisons
-    #print(matrix)
-    #print(goal)
     #Use Manhattan distance Method to return Heuristic Value
     #Initial Heuristic of Matrix
     heuristicValue = 0
@@ -81,7 +87,7 @@ def findHeuristic(matrix):
                             pass
                         else:
                             heuristicValue += (abs(k-i) + abs(n-o))
-                            print("FOUND: " + "[" + str(i) + str(o) + " |AT| " + str(k) + str(n)+ "]:" + str(abs(k-i)) +" + " + str(abs(n-o)))
+                            #DEBUGprint("FOUND: " + "[" + str(i) + str(o) + " |AT| " + str(k) + str(n)+ "]:" + str(abs(k-i)) +" + " + str(abs(n-o)))
     print("Total H(n): " + str(heuristicValue))
     return heuristicValue
 
@@ -223,6 +229,7 @@ class Puzzle:
     def __init__(self,matrix,max=INFINITY):
         self.children = []
         self.state = matrix
+        self.previous = []
         self.nodeHeuristic = findHeuristic(matrix)
         self.maxHeuristic = max
 
