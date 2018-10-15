@@ -1,3 +1,8 @@
+# Program by: Ali Sbeiti
+# UTD-ID: aas151830
+# AI 4365.003 - Project 1
+#-------------------------
+
 # -- Libraries
 #Import Tkinter Lib (Python 3.3 CORE library)
 from tkinter import filedialog
@@ -5,7 +10,7 @@ from tkinter import *
 #Import Copy Lib (3.3 CORE)
 import copy
 #INFINITY "Constant"
-INFINITY = 10000
+INFINITY = 100000
 
 # -- RBFS Function
 def RBFS(this):
@@ -28,7 +33,7 @@ def RBFS(this):
     nodeChildren = []
     for child in this.children:
         nodeChildren.append(Puzzle(child))
-    
+
     #Increment through subtree until a valid path to the solution has been found
     while True:
         #Initial Sort List of Puzzle Node objects organized by heuristic values (Low -> High)
@@ -179,8 +184,6 @@ def parseFile(self):
                 if rowLine:
                     #Increment Row ID Number
                     row += 1
-            #New file opened successfully, clear textbox
-            self.matrixLog.delete(1.0,END) 
             initialOut(self,matrix)
     except:
         #Could Not Open, Or Could not Read Input (Bad Input)
@@ -189,10 +192,11 @@ def parseFile(self):
 
     #File Open and Read, now start search algorithm, Recursive Best-First Search (RBFS)
     try:
-        test = Puzzle(matrix)
-        RBFS(test)
-        for t in test.solution:
-            printBoard(appWin, t)   
+        prnt = Puzzle(matrix)
+        prnt.resetSolution()
+        RBFS(prnt)
+        for t in prnt.solution:
+            printBoard(appWin, t)
     except:
         #Could not solve puzzle
         print('Read Puzzle into Memory but could not solve --> ' +  self.fileName)
@@ -205,6 +209,8 @@ def openFile(self):
     self.fileName = filedialog.askopenfilename(initialdir = "./",title = "Select Puzzle File",filetypes = (("text files","*.txt"),("all files","*.*")))
     #Update selected file path
     self.filePath = Label(self.frame, text="File Path Selected: " + self.fileName).grid(row=1, sticky=W)
+    #New file opened successfully, clear textbox
+    self.matrixLog.delete(1.0,END) 
     #Function reads and stores Puzzle state in memory
     parseFile(self)
 
@@ -223,6 +229,8 @@ class Puzzle:
     #Add child subtree to this node
     def addSubtree(self, tree):
         self.children = copy.deepcopy(tree)
+    def resetSolution(self):
+        solution = []
 
 # -- Tk GUI Layout: Window (Contains)--> self.frames (Contains)--> Widgets
 #GUI self.frame
