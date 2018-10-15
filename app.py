@@ -5,7 +5,7 @@ from tkinter import *
 #Import Copy Lib (3.3 CORE)
 import copy
 #INFINITY "Constant"
-INFINITY = 1000000
+INFINITY = 10000
 from time import sleep
 
 # -- RBFS Function
@@ -33,18 +33,13 @@ def RBFS(this):
     
     #Increment through subtree until a valid path to the solution has been found
     while True:
+        nextStage = True
         #DEBUG
         sleep(2)
         #Node with lowest heuristic is always the candidate
         candidate = nodeChildren[0]
         #Set candidates grandfather to current node state
         candidate.previous = this.state
-        #CHeck to see if search fucntion is about to loop
-        if(this.previous):
-            if(this.previous == candidate.state):
-                print("NO LOOP")
-                candidate.nodeHeuristic = INFINITY
-                return this.nodeHeuristic
 
         #Check if cheapest node is within bound set by parent
         if(this.maxHeuristic < candidate.nodeHeuristic):
@@ -57,13 +52,23 @@ def RBFS(this):
             candidate.maxHeuristic = nodeChildren[1].nodeHeuristic
         else:
             candidate.maxHeuristic = this.maxHeuristic
+
+        #Check to see if search fucntion is about to loop
+        if(this.previous):
+            if(this.previous == candidate.state):
+                print("NO LOOP")
+                nextStage = False
+                candidate.nodeHeuristic = INFINITY
+
         #Explore next cheapest subtree
-        nextHeu = RBFS(candidate)
+        nextHeu = INFINITY
+        if(nextStage):
+            nextHeu = RBFS(candidate)
         #IF candidate was the goal state
-        if(nextHeu == 0):
-            #recursively add states to the list of solution states
-            this.solution.append(this.state)
-            return nextHeu
+            if(nextHeu == 0):
+                #recursively add states to the list of solution states
+                this.solution.append(this.state)
+                return nextHeu
         #Resort child list in case of heuristic changes change
         nodeChildren.sort(key=lambda node: node.nodeHeuristic)
 
@@ -200,8 +205,12 @@ def parseFile(self):
         return
 
     #File Open and Read, now start search algorithm, Recursive Best-First Search (RBFS)
-        
-    try:
+    test = Puzzle(matrix)
+    RBFS(test)
+    test.solution.reverse()
+    for t in test.solution:
+        printBoard(appWin, t)   
+    '''try:
         test = Puzzle(matrix)
         RBFS(test)
         test.solution.reverse()
@@ -209,8 +218,8 @@ def parseFile(self):
             printBoard(appWin, t)                             
     except:
         #Could not solve puzzle
-        print('Read Puzzle into Memory but could not solve --> ' + self.fileName)
-        return
+        print('Read Puzzle into Memory but could not solve --> ' +  self.fileName)
+        return'''
         
 
 #Function Calls the file explorer on host OS
