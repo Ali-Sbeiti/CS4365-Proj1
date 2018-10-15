@@ -6,7 +6,6 @@ from tkinter import *
 import copy
 #INFINITY "Constant"
 INFINITY = 10000
-from time import sleep
 
 # -- RBFS Function
 def RBFS(this):
@@ -55,7 +54,6 @@ def RBFS(this):
         rtnSet = INFINITY
         for prev in this.solution:
             if(candidate.state == prev):
-                print("NO LOOP")
                 visitCand = False
                 candidate.nodeHeuristic = INFINITY              
         
@@ -87,8 +85,6 @@ def findHeuristic(matrix):
                             pass
                         else:
                             heuristicValue += (abs(k-i) + abs(n-o))
-                            #DEBUGprint("FOUND: " + "[" + str(i) + str(o) + " |AT| " + str(k) + str(n)+ "]:" + str(abs(k-i)) +" + " + str(abs(n-o)))
-    print("Total H(n): " + str(heuristicValue))
     return heuristicValue
 
 #Returns a list of possible board states after one move
@@ -103,27 +99,19 @@ def findChildren(matrix):
     states = []
     #check if a north swap is possible
     if((empty[0] - 1) >= 0):
-        print("Swap North")
         states.append(tileSwap(matrix, empty, [(empty[0] - 1), empty[1]]))
     #check if a south swap is possible
     if((empty[0] + 1) < len(matrix)):
-        print("Swap South")
         states.append(tileSwap(matrix, empty, [(empty[0] + 1), empty[1]]))
     #check if east swap is possible
     if((empty[1] + 1) < len(matrix[empty[0]])):
-        print("Swap East")
         states.append(tileSwap(matrix, empty, [empty[0], (empty[1] + 1)]))
     #check if west swap is possible
     if((empty[1] - 1) >= 0):
-        print("Swap West")
         states.append(tileSwap(matrix, empty, [empty[0], (empty[1] - 1)]))
 
     return states
 
-    #Debug
-    '''for state in states:
-        printBoard(appWin, state)
-    printBoard(appWin, matrix)'''
 #Swaps the empty tile of a matrix with some other tile in a direction
 def tileSwap(matrix,empty,tile):
     #Create a copy of the matrix object
@@ -200,20 +188,15 @@ def parseFile(self):
         return
 
     #File Open and Read, now start search algorithm, Recursive Best-First Search (RBFS)
-    test = Puzzle(matrix)
-    RBFS(test)
-    for t in test.solution:
-        printBoard(appWin, t)   
-    '''try:
+    try:
         test = Puzzle(matrix)
         RBFS(test)
-        test.solution.reverse()
         for t in test.solution:
-            printBoard(appWin, t)                             
+            printBoard(appWin, t)   
     except:
         #Could not solve puzzle
         print('Read Puzzle into Memory but could not solve --> ' +  self.fileName)
-        return'''
+        return
         
 
 #Function Calls the file explorer on host OS
