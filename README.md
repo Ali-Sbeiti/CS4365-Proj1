@@ -2,4 +2,3 @@
 8-Puzzle solver using recursive best-first-search. UTD CS 4365 - Project 1.
 
 This is just an early academic project for my Artificial Intelligence Class. UTD.
-NOT representative of my programming skills, thankfully.
